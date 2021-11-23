@@ -438,8 +438,8 @@ function Read-CatalogEntry
     (
         [Parameter(Mandatory = $true)]
         $Item,
-		
-		[Parameter()]
+
+        [Parameter()]
         [AllowNull()]
         [pscredential]
         $Credential
@@ -774,14 +774,14 @@ function Start-Command
     $process.StartInfo = $processInfo
     $process.Start() | Out-Null
 
-    $output = $process.StandardOutput.ReadToEnd();
-    $error = $process.StandardError.ReadToEnd();
+    $_output = $process.StandardOutput.ReadToEnd();
+    $_error = $process.StandardError.ReadToEnd();
 
     $process.WaitForExit()
 
     $return = [pscustomobject]@{
-        StdOut = $output
-        StdErr = $error
+        StdOut = $_output
+        StdErr = $_error
         ExitCode = $process.ExitCode
     }
 
