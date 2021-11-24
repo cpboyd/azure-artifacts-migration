@@ -602,9 +602,9 @@ function Start-Migration
     
     # Writes packacke content bytes to temporary .nupkg file during migration
     [io.file]::WriteAllBytes($TempFilePath, $response.Content)
-    $arguments = "push -Source $DestinationIndexUrl -ApiKey Migration $TempFilePath"
+    $arguments = "nuget push -Source $DestinationIndexUrl -ApiKey Migration $TempFilePath"
 
-    $result = Start-Command -CommandTitle 'nuget.exe' -CommandArguments $arguments
+    $result = Start-Command -CommandTitle 'dotnet' -CommandArguments $arguments
     $return = @{
         Url         = $ContentUrl
         HttpStatus  = $response.StatusCode
@@ -819,7 +819,7 @@ function Update-NuGetSource
         $Password
     )
 
-    $sourceAdd = Start-Command -CommandTitle 'nuget.exe' -CommandArguments "sources Add -Name $FeedName -Source $DevOpsSourceUrl"
+    $sourceAdd = Start-Command -CommandTitle 'dotnet' -CommandArguments "nuget add source -Name $FeedName -Source $DevOpsSourceUrl"
     if ($sourceAdd.ExitCode -eq 1)
     {
         if ($sourceAdd.StdErr -match ".*name specified has already been added to the list of available package sources.*")
@@ -833,7 +833,7 @@ function Update-NuGetSource
         }
     }
 
-    $sourceUpdate = Start-Command -CommandTitle nuget.exe -CommandArguments "sources Update -Name $FeedName -UserName 'username' -Password $password"
+    $sourceUpdate = Start-Command -CommandTitle 'dotnet' -CommandArguments "nuget update source -Name $FeedName -UserName 'username' -Password $password"
 
     if ($sourceUpdate.ExitCode -eq 1)
     {
