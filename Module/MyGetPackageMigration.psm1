@@ -23,9 +23,8 @@
     .PARAMETER SourceUsername
         The username of your Source pacakgeing provider
 
-    .PARAMETER SourcePassword
-        A string password to your package source. Password is encrypted before 
-        being used in any webrequests.
+    .PARAMETER SourcePAT
+        Azure DevOps Personal Access Token (PAT) string
 
     .PARAMETER NumVersions
         Max number of versions to migrate
@@ -68,11 +67,11 @@ function Move-MyGetNuGetPackages
 
         [Parameter()]
         [string]
-        $SourceUsername,
+        $SourceUsername = 'PackageMigration',
 
         [Parameter()]
-        [securestring]
-        $SourcePassword,
+        [string]
+        $SourcePAT,
 
         [Parameter()]
         [string]
@@ -107,9 +106,10 @@ function Move-MyGetNuGetPackages
         Update-NuGetSource -FeedName $DestinationFeedName -DevOpsSourceUrl $DestinationIndexUrl -Password $DestinationPAT
     }
 
-    if ($SourcePassword)
+    if ($SourcePAT)
     {
-        $sourceCredential = New-Object -TypeName pscredential -ArgumentList $SourceUsername, $SourcePassword
+        $securePassword = ConvertTo-SecureString -String $SourcePAT -AsPlainText -Force
+        $sourceCredential = New-Object -TypeName pscredential -ArgumentList $SourceUsername, $securePassword
     }
 
     $securePassword = ConvertTo-SecureString -String $DestinationPAT -AsPlainText -Force
